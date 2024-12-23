@@ -13,9 +13,31 @@ use Illuminate\Routing\Controller;
 class OAuthController extends Controller
 {
     public function jwks(
+        Request $request,
         ECDSAService $ecdsa,
+        DomainResolverService $domainResolver,
+        DidResolverService $didResolver,
+        OAuthService $oauthService,
     )
     {
+        $did = "alyxia.dev";
+//        $did = "alt.alyxia.dev";
+        if (!str_starts_with($did, "did:"))
+            $did = $domainResolver->getDidForDomain($did);
+
+        if ($did === null) {
+            return new JsonResponse(['error' => "Could not resolve the DID for $did"]);
+        }
+
+        $res = $didResolver->resolveDid($did);
+        $pds = $didResolver->getPdsFromDidResponse($res);
+        if ($pds === null) {
+            return new JsonResponse(['error' => "Could not resolve the PDS for $did"]);
+        }
+
+        $authServer = $oauthService->getAuthServerDataForPds($pds);
+        $clientData = $oauthService->getClientData();
+
         $jwk = $ecdsa->getJwk();
         $jwk['key_ops'] = [
             'verify'
@@ -28,24 +50,8 @@ class OAuthController extends Controller
         ]);
     }
 
-    public function clientMetadata(Request $request)
+    public function clientMetadata(Request $request, OAuthService $oauthService)
     {
-        return new JsonResponse([
-            'client_id' => $request->url(),
-            'client_name' => 'AlyCMS',
-            'grant_types' => [
-                'authorization_code',
-                'refresh_token'
-            ],
-            'scope' => 'atproto transition:generic',
-            'redirect_uris' => [
-                "https://{$_SERVER["HTTP_HOST"]}/api/oauth/callback"
-            ],
-            "dpop_bound_access_tokens" => true,
-            "application_type" => "web",
-            "token_endpoint_auth_method" => "private_key_jwt",
-            "token_endpoint_auth_signing_alg" => "ES256",
-            "jwks_uri" => "https://{$_SERVER["HTTP_HOST"]}/api/oauth/jwks.json",
-        ]);
+        return new JsonResponse($oauthService->getClientMetadata($request));
     }
 }

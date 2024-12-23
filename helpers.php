@@ -41,3 +41,11 @@ function view($name, $variables = [])
 
     throw new FileNotFoundException("Neither a .html or a .twig file was found at $path.");
 }
+
+/**
+ * @throws Exception
+ */
+function TODO(string $reason)
+{
+    throw new Exception("An operation is not implemented: $reason");
+}
