@@ -12,6 +12,22 @@ use Illuminate\Routing\Controller;
 
 class OAuthController extends Controller
 {
+    public function jwks(
+        ECDSAService $ecdsa,
+    )
+    {
+        $jwk = $ecdsa->getJwk();
+        $jwk['key_ops'] = [
+            'verify'
+        ];
+
+        return new JsonResponse([
+            'keys' => [
+                $jwk
+            ]
+        ]);
+    }
+
     public function clientMetadata(Request $request)
     {
         return new JsonResponse([

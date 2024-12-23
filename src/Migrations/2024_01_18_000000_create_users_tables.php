@@ -153,6 +153,10 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('settings');
+        Schema::dropIfExists('users');
+        Schema::dropIfExists('users_confirmations');
+        Schema::dropIfExists('users_remembered');
+        Schema::dropIfExists('users_resets');
+        Schema::dropIfExists('users_throttling');
     }
 };

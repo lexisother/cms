@@ -13,7 +13,10 @@
         "twig/markdown-extra": "^3.7",
         "league/commonmark": "^2.4",
         "ext-curl": "*",
-        "delight-im/auth": "^8.3"
+        "delight-im/auth": "^8.3",
+        "starkbank/ecdsa": "^2.0",
+        "firebase/php-jwt": "^6.10",
+        "ext-openssl": "*"
     },
     "license": "MIT",
     "autoload": {

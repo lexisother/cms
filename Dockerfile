@@ -15,7 +15,7 @@ RUN composer install \
 FROM trafex/php-nginx:3.5.0
 
 USER root
-RUN apk add --no-cache php83-pgsql php83-pdo php83-pdo_pgsql php83-pdo_sqlite
+RUN apk add --no-cache php83-pgsql php83-pdo php83-pdo_pgsql php83-pdo_sqlite php83-openssl openssl
 USER nobody
 
 COPY --chown=nginx --from=composer /app /var/www/html

@@ -56,6 +56,7 @@ Route::group(['namespace' => 'App\Controllers'], function () use ($auth) {
 
     Route::prefix('api/oauth')->group(function () {
         Route::get('/client-metadata.json', "OAuthController@clientMetadata");
+        Route::get('/jwks.json', "OAuthController@jwks");
     });
 
     Route::get('/api/posts', function () {
