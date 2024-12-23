@@ -36,7 +36,6 @@ Route::group(['namespace' => 'App\Controllers'], function () use ($auth) {
         if ((!isset($_SERVER['PHP_AUTH_USER']) || empty($_SERVER['PHP_AUTH_USER'])) ||
             (!isset($_SERVER['PHP_AUTH_PW']) || empty($_SERVER['PHP_AUTH_PW']))
         ) {
-
             header('WWW-Authenticate: Basic realm="AlyCMS"');
             header("HTTP/2.0 401 Unauthorized");
             die("auth failed!");
@@ -53,6 +52,10 @@ Route::group(['namespace' => 'App\Controllers'], function () use ($auth) {
         } else {
             header("Location: /");
         }
+    });
+
+    Route::prefix('api/oauth')->group(function () {
+        Route::get('/client-metadata.json', "OAuthController@clientMetadata");
     });
 
     Route::get('/api/posts', function () {
